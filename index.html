@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>OSSIAN PRO — Top 100 Ranking</title>
+  <link id="siteFaviconLink" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23fde047'/%3E%3Cstop offset='55%25' stop-color='%23f59e0b'/%3E%3Cstop offset='100%25' stop-color='%23b45309'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='18' fill='%230f172a'/%3E%3Ccircle cx='32' cy='32' r='17' fill='none' stroke='url(%23g)' stroke-width='6'/%3E%3Cpath d='M32 10 L36 22 L32 19 L28 22 Z' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='6' fill='url(%23g)'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #f1f5f9;
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --primary: #d97706;
+      --gold-grad: linear-gradient(135deg, #fde047 0%, #f59e0b 50%, #b45309 100%);
+      --gold-bg: rgba(245, 158, 11, 0.12);
+      --gold-border: rgba(245, 158, 11, 0.32);
+      --shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+      --nav-bg: rgba(255, 255, 255, 0.94);
+    }
+    body.dark {
+      --bg: #0b1120;
+      --surface: #111827;
+      --surface-2: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #1f2937;
+      --primary: #f59e0b;
+      --gold-bg: rgba(245, 158, 11, 0.14);
+      --gold-border: rgba(245, 158, 11, 0.34);
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.38);
+      --nav-bg: rgba(17, 24, 39, 0.94);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg); color: var(--text); min-height: 100vh;
+      display: flex; justify-content: center; transition: background-color 0.25s, color 0.25s;
+    }
+    .gold-icon {
+      color: #f59e0b; background: var(--gold-grad);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; display: inline-block;
+    }
+    .app-shell {
+      width: 100%; max-width: 780px; min-height: 100vh;
+      background: var(--bg); display: flex; flex-direction: column; padding-bottom: 36px;
+    }
+    @media (min-width: 780px) {
+      .app-shell { border-left: 1px solid var(--border); border-right: 1px solid var(--border); box-shadow: var(--shadow); }
+    }
+
+    /* Sticky Top Header */
+    .top-header {
+      position: sticky; top: 0; z-index: 40;
+      background: var(--nav-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border); padding: 11px 14px;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-logo {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: linear-gradient(145deg, #0f172a, #1e293b);
+      border: 1.5px solid rgba(245, 158, 11, 0.55);
+      display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;
+    }
+    .brand-logo img { width: 100%; height: 100%; object-fit: cover; }
+    .brand-logo svg { width: 24px; height: 24px; }
+    .brand-title { font-size: 17px; font-weight: 800; letter-spacing: -0.3px; }
+    .brand-sub { font-size: 11px; color: var(--text-muted); display: block; }
+    .header-actions { display: flex; align-items: center; gap: 7px; }
+    .icon-btn {
+      background: var(--surface-2); border: 1px solid var(--border); width: 36px; height: 36px;
+      border-radius: 10px; display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 14px; color: var(--text);
+    }
+
+    .main-content { padding: 16px; flex: 1; }
+    .view-screen { display: none; animation: fadeIn 0.22s ease; }
+    .view-screen.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .panel-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+      padding: 18px 16px; margin-bottom: 14px; box-shadow: var(--shadow);
+    }
+
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 5px; }
+    .form-group input, .form-group select {
+      width: 100%; padding: 11px 13px; border-radius: 12px; border: 1px solid var(--border);
+      background: var(--surface-2); color: var(--text); font-size: 14px; outline: none; font-family: inherit;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: #f59e0b; }
+
+    .btn {
+      width: 100%; padding: 12px 16px; border-radius: 13px; border: none;
+      font-size: 14px; font-weight: 800; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-primary { background: var(--gold-grad); color: #0f172a; }
+    .btn-secondary { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
+
+    .err-box {
+      background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #ef4444; padding: 11px 13px; border-radius: 13px; font-size: 12.5px; font-weight: 700;
+      margin-bottom: 12px; display: none; line-height: 1.45;
+    }
+    .err-box.show { display: block; }
+    .info-box {
+      background: var(--gold-bg); border: 1px solid var(--gold-border); border-radius: 13px;
+      padding: 10px 12px; font-size: 12.5px; font-weight: 600; line-height: 1.5; margin-bottom: 12px;
+    }
+
+    /* User Account & Wallet Hero */
+    .hero-card {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 65%, #334155 100%);
+      color: #ffffff; border-radius: 20px; padding: 16px 18px; margin-bottom: 14px;
+      border: 1px solid rgba(245, 158, 11, 0.4); box-shadow: 0 10px 25px rgba(15, 23, 42, 0.22);
+    }
+    .hero-name { font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 7px; }
+    .hero-sub-pills { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 6px; }
+    .hero-chip {
+      font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 99px;
+      background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(245, 158, 11, 0.4); color: #f8fafc;
+      display: inline-flex; align-items: center; gap: 5px;
+    }
+    .wallet-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px;
+      margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.14);
+    }
+    @media (min-width: 560px) { .wallet-grid { grid-template-columns: repeat(4, 1fr); } }
+    .wallet-stat {
+      background: rgba(15, 23, 42, 0.55); border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 13px; padding: 9px 11px;
+    }
+    .wallet-stat-lbl { font-size: 10.5px; color: #cbd5e1; font-weight: 700; }
+    .wallet-stat-val { font-size: 16px; font-weight: 900; color: #fde047; margin-top: 2px; }
+
+    /* 7-Day Refresh Bar */
+    .cycle-bar {
+      background: var(--surface); border: 1px solid var(--gold-border); border-radius: 16px;
+      padding: 12px 14px; margin-bottom: 14px; box-shadow: var(--shadow);
+      display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+    }
+    .cycle-timer-pill {
+      background: #0f172a; color: #fde047; border: 1px solid rgba(245, 158, 11, 0.55);
+      padding: 6px 12px; border-radius: 99px; font-size: 12px; font-weight: 800;
+      font-family: ui-monospace, Menlo, monospace; display: inline-flex; align-items: center; gap: 6px;
+    }
+
+    /* Search & Filter Toolbar */
+    .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .search-input {
+      flex: 1; min-width: 190px; padding: 10px 12px; border-radius: 12px;
+      border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
+      font-size: 13.5px; outline: none;
+    }
+    .search-input:focus { border-color: #f59e0b; }
+
+    .chips-row { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 12px; }
+    .chip {
+      padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border);
+      background: var(--surface-2); color: var(--text-muted); font-size: 12px; font-weight: 700; cursor: pointer;
+    }
+    .chip.active { background: var(--gold-grad); color: #0f172a; border-color: transparent; }
+
+    /* Blue Tick + Verified Pill (Only Top 6) */
+    .verified-blue-pill {
+      font-size: 10.5px; font-weight: 800; padding: 3px 9px; border-radius: 99px;
+      background: rgba(29, 155, 240, 0.14); border: 1px solid rgba(29, 155, 240, 0.42);
+      color: #1d9bf0; display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0;
+    }
+    .verified-blue-pill i { color: #1d9bf0; font-size: 12px; }
+
+    /* Top 3 Podium */
+    .podium-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 14px; }
+    @media (min-width: 600px) { .podium-grid { grid-template-columns: repeat(3, 1fr); } }
+    .podium-card {
+      background: var(--surface); border: 1.5px solid var(--gold-border); border-radius: 18px;
+      padding: 14px 12px; text-align: center; box-shadow: var(--shadow);
+    }
+    .podium-card.rank-1 {
+      border-color: #f59e0b;
+      background: linear-gradient(180deg, rgba(245, 158, 11, 0.14) 0%, var(--surface) 60%);
+    }
+    .rank-crown {
+      width: 38px; height: 38px; border-radius: 50%; margin: 0 auto 8px;
+      background: var(--gold-grad); color: #0f172a; font-size: 14px; font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Ranking Rows (#1 to #100) */
+    .rank-list { display: flex; flex-direction: column; gap: 10px; }
+    .rank-row {
+      background: var(--surface-2); border: 1px solid var(--border); border-radius: 16px;
+      padding: 12px 13px; display: flex; flex-direction: column; gap: 8px;
+    }
+    .rank-row.top6 { border-color: rgba(29, 155, 240, 0.35); }
+    .rank-row-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .rank-left { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
+    .rank-num-box {
+      min-width: 38px; height: 38px; border-radius: 11px; padding: 0 6px;
+      background: var(--surface); border: 1px solid var(--gold-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 900; color: var(--primary); flex-shrink: 0;
+    }
+    .rank-name { font-size: 14.5px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rank-sub { font-size: 11.5px; color: var(--text-muted); }
+
+    .rank-stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .r-stat-pill {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+      padding: 6px 8px; text-align: center;
+    }
+    .r-stat-k { font-size: 10px; font-weight: 700; color: var(--text-muted); }
+    .r-stat-v { font-size: 12.5px; font-weight: 800; color: var(--text); margin-top: 1px; }
+
+    .toast {
+      position: fixed; top: 70px; left: 50%; transform: translateX(-50%) translateY(-16px);
+      background: #0f172a; color: #fde047; border: 1px solid rgba(245, 158, 11, 0.45);
+      padding: 10px 18px; border-radius: 99px; font-size: 13px; font-weight: 600;
+      z-index: 9999; opacity: 0; pointer-events: none; transition: all 0.25s;
+      display: inline-flex; align-items: center; gap: 8px; max-width: 92%; text-align: center;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+  <div class="app-shell">
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="brand">
+        <div class="brand-logo" id="headerBrandLogo">
+          <svg viewBox="0 0 64 64" fill="none">
+            <defs>
+              <linearGradient id="ossianGoldR" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#fde047"/><stop offset="50%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#b45309"/>
+              </linearGradient>
+            </defs>
+            <circle cx="32" cy="32" r="20" stroke="url(#ossianGoldR)" stroke-width="5.5"/>
+            <path d="M32 6L36 16H28L32 6Z" fill="url(#ossianGoldR)"/>
+            <circle cx="32" cy="32" r="7" fill="url(#ossianGoldR)"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">OSSIAN PRO Ranking</div>
+          <span class="brand-sub">Top 100 Leaderboard (7-Day Cycle)</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button class="icon-btn" id="refreshBtn" onclick="syncRankingData(true)" title="Sync Ranking & Wallet" style="display:none;">
+          <i class="fa-solid fa-arrows-rotate gold-icon"></i>
+        </button>
+        <button class="icon-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Toggle Theme">
+          <i class="fa-solid fa-moon gold-icon"></i>
+        </button>
+        <button class="icon-btn" id="signOutBtn" onclick="signOutRanking()" title="Sign Out" style="display:none;">
+          <i class="fa-solid fa-right-from-bracket" style="color:#ef4444;"></i>
+        </button>
+      </div>
+    </header>
+
+    <main class="main-content">
+
+      <!-- SCREEN 1: LOGIN FIRST -->
+      <section id="screen-login" class="view-screen active">
+        <div class="panel-card">
+          <div style="text-align:center;margin-bottom:16px;">
+            <span style="width:52px;height:52px;border-radius:16px;background:var(--gold-bg);border:1px solid var(--gold-border);display:inline-flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:10px;">
+              <i class="fa-solid fa-trophy gold-icon"></i>
+            </span>
+            <h2 style="font-size:19px;font-weight:800;">Sign In to OSSIAN PRO Ranking</h2>
+            <p style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">
+              Top 100 ranking aur apna Balance / Tokens dekhne ke liye login karein.
+            </p>
+          </div>
+
+          <div class="err-box" id="loginErrBox"></div>
+
+          <form id="rankingLoginForm">
+            <div class="form-group">
+              <label>Registered Email</label>
+              <input type="email" id="loginEmail" placeholder="Enter your OSSIAN PRO email" required />
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" id="loginPassword" placeholder="Enter your password" required />
+            </div>
+            <button type="submit" class="btn btn-primary" id="loginSubmitBtn" style="margin-bottom:10px;">
+              <i class="fa-solid fa-right-to-bracket"></i> Sign In
+            </button>
+          </form>
+
+          <input type="file" id="qrLoginFileInput" accept="image/*" style="display:none;" />
+          <button type="button" class="btn btn-secondary" onclick="triggerQrLoginUpload()">
+            <i class="fa-solid fa-qrcode gold-icon"></i> Or Upload Private Login QR
+          </button>
+        </div>
+      </section>
+
+      <!-- SCREEN 2: REGION & COUNTRY (SYNCED WITH OSSIAN TOK BUY) -->
+      <section id="screen-region" class="view-screen">
+        <div class="panel-card">
+          <div style="text-align:center;margin-bottom:14px;">
+            <span style="width:52px;height:52px;border-radius:16px;background:var(--gold-bg);border:1px solid var(--gold-border);display:inline-flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:10px;">
+              <i class="fa-solid fa-earth-asia gold-icon"></i>
+            </span>
+            <h2 id="regionTitle" style="font-size:18px;font-weight:800;">Region &amp; Country</h2>
+            <p id="regionDesc" style="font-size:12.5px;color:var(--text-muted);margin-top:4px;line-height:1.45;"></p>
+          </div>
+
+          <div class="info-box" id="regionModeBanner" style="display:none;"></div>
+          <div class="err-box" id="regionErrBox"></div>
+
+          <form id="regionForm">
+            <div class="form-group">
+              <label>Select Region</label>
+              <select id="regionSelect" onchange="onRegionSelectChange()" required>
+                <option value="">-- Select Region --</option>
+                <option value="ALL">All Regions</option>
+                <option value="AS">Asia</option>
+                <option value="ME">Middle East</option>
+                <option value="EU">Europe</option>
+                <option value="NA">North America</option>
+                <option value="SA">South America</option>
+                <option value="AF">Africa</option>
+                <option value="OC">Oceania</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Select Country</label>
+              <select id="countrySelect" required>
+                <option value="">-- Select Country --</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary" id="regionSubmitBtn">
+              <i class="fa-solid fa-check-circle"></i> <span id="regionBtnText">Confirm &amp; Open Ranking</span>
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- SCREEN 3: TOP 100 RANKING PAGE -->
+      <section id="screen-ranking" class="view-screen">
+
+        <!-- User Account Balance, Tokens & Own Summary -->
+        <div class="hero-card">
+          <div>
+            <div class="hero-name">
+              <i class="fa-solid fa-crown gold-icon"></i>
+              <span id="heroUserName">-</span>
+            </div>
+            <div class="hero-sub-pills">
+              <span class="hero-chip"><i class="fa-solid fa-id-badge gold-icon"></i> <span id="heroUserUid">-</span></span>
+              <span class="hero-chip"><i class="fa-solid fa-earth-asia gold-icon"></i> <span id="heroUserCountry">-</span></span>
+              <span class="hero-chip"><i class="fa-solid fa-ranking-star gold-icon"></i> Status: <strong id="heroMyRank">Outside Top 100</strong></span>
+            </div>
+          </div>
+
+          <div class="wallet-grid">
+            <div class="wallet-stat">
+              <div class="wallet-stat-lbl">Balance</div>
+              <div class="wallet-stat-val" id="heroBalance">$0.00</div>
+            </div>
+            <div class="wallet-stat">
+              <div class="wallet-stat-lbl">Remaining Tokens</div>
+              <div class="wallet-stat-val" id="heroTokens">0</div>
+            </div>
+            <div class="wallet-stat">
+              <div class="wallet-stat-lbl">My Uploads / Pop</div>
+              <div class="wallet-stat-val" id="heroMyActivity">0 / 0</div>
+            </div>
+            <div class="wallet-stat">
+              <div class="wallet-stat-lbl">My Payout</div>
+              <div class="wallet-stat-val" id="heroMyPayout">$0.00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7-Day Refresh Countdown -->
+        <div class="cycle-bar">
+          <div>
+            <div style="font-size:13.5px;font-weight:800;">
+              <i class="fa-solid fa-calendar-week gold-icon"></i> Weekly Cycle #<span id="cycleNumberText">1</span> • Top 6 Verified
+            </div>
+            <div style="font-size:11.5px;color:var(--text-muted);" id="dailyDateLabel">
+              Har roz naye top creators rankings mein update hote hain.
+            </div>
+          </div>
+          <span class="cycle-timer-pill">
+            <i class="fa-solid fa-hourglass-half"></i> <span id="sevenDayTimer">7d 00h 00m 00s</span>
+          </span>
+        </div>
+
+        <!-- Top 3 Podium -->
+        <div id="podiumGrid" class="podium-grid"></div>
+
+        <!-- Ranks 1 to 100 List -->
+        <div class="panel-card">
+          <div class="toolbar">
+            <div style="font-size:15.5px;font-weight:800;">
+              <i class="fa-solid fa-list-ol gold-icon"></i> Rankings (#1 – #100)
+            </div>
+            <input type="text" id="rankSearchInput" class="search-input" placeholder="Search Name, UID, Country..." oninput="renderRankingList()" />
+          </div>
+
+          <div class="chips-row">
+            <button class="chip active" onclick="setRankFilter('all', this)">All (1–100)</button>
+            <button class="chip" onclick="setRankFilter('top6', this)">Top 6 (Verified)</button>
+            <button class="chip" onclick="setRankFilter('top10', this)">Top 10</button>
+            <button class="chip" onclick="setRankFilter('top50', this)">Top 50</button>
+          </div>
+
+          <div id="rankingListBody" class="rank-list"></div>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i> <span>Updated!</span></div>
+
+  <script>
+    (function () {
+      const _j = function (a) { return a.join(""); };
+      const API_KEY = _j(["AIzaSyAmRa", "nnDqIGfpZb", "rM5UmQODj5", "Ww7AR6sHI"]);
+      const PROJECT_ID = _j(["ossian", "-web"]);
+      const BASE = "https://firestore.googleapis.com/v1/projects/" + PROJECT_ID + "/databases/(default)/documents";
+      const USERS_URL = BASE + "/users";
+      const APPS_URL = BASE + "/apps";
+      const SUBS_URL = BASE + "/submitted_apps";
+      const WITHDRAWS_URL = BASE + "/withdraw_requests";
+      const BRANDING_URL = BASE + "/branding";
+      const SETTINGS_URL = BASE + "/settings";
+      const CONFIG_URL = BASE + "/config";
+
+      const SESSION_SECRET_KEY = "OSSIAN_PRO_BANK_SEC_V3";
+      const DAY_MS = 24 * 3600 * 1000;
+      const SEVEN_DAYS_MS = 7 * DAY_MS;
+
+      let currentUser = null;
+      let verifiedRegion = "";
+      let verifiedCountry = "";
+      let rankingData100 = [];
+      let rankFilter = "all";
+      let timerHandle = null;
+      let activeWeekIndex = Math.floor(Date.now() / SEVEN_DAYS_MS);
+      let activeDayIndex = Math.floor(Date.now() / DAY_MS);
+
+      const COUNTRIES = [
+        ["AS","Afghanistan"],["AS","Armenia"],["AS","Azerbaijan"],["AS","Bangladesh"],["AS","Bhutan"],
+        ["AS","Brunei"],["AS","Cambodia"],["AS","China"],["AS","Georgia"],["AS","Hong Kong"],["AS","India"],
+        ["AS","Indonesia"],["AS","Japan"],["AS","Kazakhstan"],["AS","Kyrgyzstan"],["AS","Laos"],
+        ["AS","Malaysia"],["AS","Maldives"],["AS","Mongolia"],["AS","Myanmar"],["AS","Nepal"],
+        ["AS","North Korea"],["AS","Pakistan"],["AS","Philippines"],["AS","Singapore"],["AS","South Korea"],
+        ["AS","Sri Lanka"],["AS","Taiwan"],["AS","Tajikistan"],["AS","Thailand"],["AS","Timor-Leste"],
+        ["AS","Turkmenistan"],["AS","Uzbekistan"],["AS","Vietnam"],
+        ["ME","Bahrain"],["ME","Cyprus"],["ME","Iran"],["ME","Iraq"],["ME","Israel"],["ME","Jordan"],
+        ["ME","Kuwait"],["ME","Lebanon"],["ME","Oman"],["ME","Palestine"],["ME","Qatar"],
+        ["ME","Saudi Arabia"],["ME","Syria"],["ME","Turkey"],["ME","United Arab Emirates"],["ME","Yemen"],
+        ["EU","Albania"],["EU","Andorra"],["EU","Austria"],["EU","Belarus"],["EU","Belgium"],
+        ["EU","Bosnia & Herzegovina"],["EU","Bulgaria"],["EU","Croatia"],["EU","Czechia"],["EU","Denmark"],
+        ["EU","Estonia"],["EU","Finland"],["EU","France"],["EU","Germany"],["EU","Greece"],["EU","Hungary"],
+        ["EU","Iceland"],["EU","Ireland"],["EU","Italy"],["EU","Kosovo"],["EU","Latvia"],["EU","Liechtenstein"],
+        ["EU","Lithuania"],["EU","Luxembourg"],["EU","Malta"],["EU","Moldova"],["EU","Monaco"],
+        ["EU","Montenegro"],["EU","Netherlands"],["EU","North Macedonia"],["EU","Norway"],["EU","Poland"],
+        ["EU","Portugal"],["EU","Romania"],["EU","Russia"],["EU","San Marino"],["EU","Serbia"],
+        ["EU","Slovakia"],["EU","Slovenia"],["EU","Spain"],["EU","Sweden"],["EU","Switzerland"],
+        ["EU","Ukraine"],["EU","United Kingdom"],["EU","Vatican City"],
+        ["NA","Antigua & Barbuda"],["NA","Bahamas"],["NA","Barbados"],["NA","Belize"],["NA","Canada"],
+        ["NA","Costa Rica"],["NA","Cuba"],["NA","Dominica"],["NA","Dominican Republic"],["NA","El Salvador"],
+        ["NA","Grenada"],["NA","Guatemala"],["NA","Haiti"],["NA","Honduras"],["NA","Jamaica"],
+        ["NA","Mexico"],["NA","Nicaragua"],["NA","Panama"],["NA","Saint Kitts & Nevis"],
+        ["NA","Saint Lucia"],["NA","Saint Vincent"],["NA","Trinidad & Tobago"],["NA","United States"],
+        ["SA","Argentina"],["SA","Bolivia"],["SA","Brazil"],["SA","Chile"],["SA","Colombia"],
+        ["SA","Ecuador"],["SA","Guyana"],["SA","Paraguay"],["SA","Peru"],["SA","Suriname"],
+        ["SA","Uruguay"],["SA","Venezuela"],
+        ["AF","Algeria"],["AF","Angola"],["AF","Benin"],["AF","Botswana"],["AF","Burkina Faso"],
+        ["AF","Burundi"],["AF","Cabo Verde"],["AF","Cameroon"],["AF","Central African Rep."],["AF","Chad"],
+        ["AF","Comoros"],["AF","Congo (DRC)"],["AF","Congo (Rep.)"],["AF","Cote d'Ivoire"],["AF","Djibouti"],
+        ["AF","Egypt"],["AF","Equatorial Guinea"],["AF","Eritrea"],["AF","Eswatini"],["AF","Ethiopia"],
+        ["AF","Gabon"],["AF","Gambia"],["AF","Ghana"],["AF","Guinea"],["AF","Guinea-Bissau"],
+        ["AF","Kenya"],["AF","Lesotho"],["AF","Liberia"],["AF","Libya"],["AF","Madagascar"],
+        ["AF","Malawi"],["AF","Mali"],["AF","Mauritania"],["AF","Mauritius"],["AF","Morocco"],
+        ["AF","Mozambique"],["AF","Namibia"],["AF","Niger"],["AF","Nigeria"],["AF","Rwanda"],
+        ["AF","Sao Tome & Principe"],["AF","Senegal"],["AF","Seychelles"],["AF","Sierra Leone"],
+        ["AF","Somalia"],["AF","South Africa"],["AF","South Sudan"],["AF","Sudan"],["AF","Tanzania"],
+        ["AF","Togo"],["AF","Tunisia"],["AF","Uganda"],["AF","Zambia"],["AF","Zimbabwe"],
+        ["OC","Australia"],["OC","Fiji"],["OC","Kiribati"],["OC","Marshall Islands"],["OC","Micronesia"],
+        ["OC","Nauru"],["OC","New Zealand"],["OC","Palau"],["OC","Papua New Guinea"],["OC","Samoa"],
+        ["OC","Solomon Islands"],["OC","Tonga"],["OC","Tuvalu"],["OC","Vanuatu"]
+      ];
+
+      const CREATOR_FIRST = [
+        "Aarav","Zayan","Hamza","Bilal","Ayesha","Hira","Sana","Omar","Usman","Hassan",
+        "Lucas","Liam","Noah","Sofia","Elena","Mateo","Ethan","Chloe","Maya","Daniel",
+        "Tariq","Fatima","Zain","Imran","Nadia","Rayan","Kian","Arjun","Meera","Yusuf",
+        "Ibrahim","Salma","Amina","Kenji","Haruto","Minho","Sora","Aiden","Aria","Leo",
+        "Saad","Farhan","Mahnoor","Kiran","Rohan","Kabir","Danyal","Noor","Taha","Sami"
+      ];
+      const CREATOR_LAST = [
+        "Khan","Malik","Ahmed","Raza","Siddiqui","Sheikh","Qureshi","Ansari","Butt","Farooq",
+        "Patel","Sharma","Verma","Hassan","Ali","Al-Mansoor","Haddad","Nasser","Chen","Kim",
+        "Tanaka","Silva","Santos","Garcia","Lopez","Miller","Carter","Walker","Brooks","Hayes"
+      ];
+      const CREATOR_COUNTRIES = [
+        "Pakistan","United Arab Emirates","Saudi Arabia","United Kingdom","United States",
+        "India","Bangladesh","Malaysia","Turkey","Canada","Germany","Indonesia","Qatar","Egypt"
+      ];
+
+      function safeGet(k, f) { try { var v = localStorage.getItem(k); return v !== null ? v : f; } catch (e) { return f; } }
+      function safeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+      function safeDel(k) { try { localStorage.removeItem(k); } catch (e) {} }
+      function roundUsd(v) { return Math.round((Number(v) || 0) * 100) / 100; }
+      function fmtNum(n) { return (Number(n) || 0).toLocaleString(); }
+      function esc(s) {
+        return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+      }
+
+      function hashSecret(str) {
+        var h1 = 0x811c9dc5, h2 = 0x9e3779b9, s = String(str || "");
+        for (var i = 0; i < s.length; i++) {
+          var ch = s.charCodeAt(i);
+          h1 ^= ch; h1 = Math.imul(h1, 0x01000193);
+          h2 ^= ch + (i << 3); h2 = Math.imul(h2, 0x85ebca6b);
+        }
+        return (h1 >>> 0).toString(16).padStart(8, "0") + (h2 >>> 0).toString(16).padStart(8, "0");
+      }
+
+      async function sha256Salted(secret, salt) {
+        var raw = String(salt || SESSION_SECRET_KEY) + "::" + String(secret || "");
+        try {
+          if (window.crypto && window.crypto.subtle && typeof TextEncoder !== "undefined") {
+            var buf = await window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(raw));
+            return Array.from(new Uint8Array(buf)).map(function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+          }
+        } catch (e) {}
+        return "H256-" + hashSecret(raw) + "-" + hashSecret(raw.split("").reverse().join(""));
+      }
+
+      function base64UrlToBytes(b64u) {
+        var b64 = String(b64u || "").replace(/-/g, "+").replace(/_/g, "/");
+        while (b64.length % 4) b64 += "=";
+        var bin = atob(b64), arr = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+        return arr;
+      }
+      function bytesToUtf8(bytes) {
+        if (typeof TextDecoder !== "undefined") return new TextDecoder().decode(bytes);
+        var s = ""; for (var i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+        return decodeURIComponent(escape(s));
+      }
+      function deriveKeystreamByte(seed, index) {
+        var h = hashSecret(seed + "::" + Math.floor(index / 8));
+        return parseInt(h.substr((index % 8) * 2, 2), 16) & 255;
+      }
+      function unsealQrPayload(rawText) {
+        var parts = String(rawText || "").trim().split(".");
+        if (parts.length !== 4 || parts[0] !== "OPR1") return null;
+        var seed = SESSION_SECRET_KEY + "|OPR1|" + parts[1];
+        if (parts[3] !== hashSecret(seed + "|MAC|" + parts[2])) return null;
+        try {
+          var cBytes = base64UrlToBytes(parts[2]), pBytes = new Uint8Array(cBytes.length);
+          for (var i = 0; i < cBytes.length; i++) pBytes[i] = cBytes[i] ^ deriveKeystreamByte(seed, i);
+          return JSON.parse(bytesToUtf8(pBytes));
+        } catch (e) { return null; }
+      }
+
+      function mulberry32(seed) {
+        var a = seed >>> 0;
+        return function () {
+          a |= 0; a = a + 0x6D2B79F5 | 0;
+          var t = Math.imul(a ^ a >>> 15, 1 | a);
+          t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+          return ((t ^ t >>> 14) >>> 0) / 4294967296;
+        };
+      }
+
+      var toastTimer;
+      function showToast(msg, isErr) {
+        var t = document.getElementById("toast");
+        var icon = t.querySelector("i");
+        icon.className = isErr ? "fa-solid fa-triangle-exclamation" : "fa-solid fa-circle-check";
+        icon.style.color = isErr ? "#ef4444" : "#fde047";
+        t.querySelector("span").textContent = msg;
+        t.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { t.classList.remove("show"); }, 3000);
+      }
+
+      function strVal(f, k, d) { return (f[k] && typeof f[k].stringValue === "string") ? f[k].stringValue : (d || ""); }
+      function numVal(f, k, d) {
+        if (!f[k]) return d || 0;
+        var v = Number(f[k].integerValue !== undefined ? f[k].integerValue : f[k].doubleValue);
+        return isNaN(v) ? (d || 0) : v;
+      }
+      function boolVal(f, k) { return Boolean(f[k] && f[k].booleanValue === true); }
+
+      function parseUserDoc(docObj) {
+        var f = docObj.fields || {};
+        return {
+          uid: strVal(f, "uid", (docObj.name || "").split("/").pop()),
+          name: strVal(f, "name"),
+          email: strVal(f, "email").trim().toLowerCase(),
+          passwordHash: strVal(f, "passwordHash"),
+          passwordSha256: strVal(f, "passwordSha256"),
+          qrToken: strVal(f, "qrToken"),
+          balance: roundUsd(numVal(f, "balance", 0)),
+          tokens: Math.max(0, Math.floor(numVal(f, "tokens", 0))),
+          buyRegion: strVal(f, "buyRegion"),
+          buyCountry: strVal(f, "buyCountry"),
+          regionSavedAt: numVal(f, "regionSavedAt", 0),
+          suspended: boolVal(f, "suspended")
+        };
+      }
+
+      async function fsGetList(url) {
+        try {
+          var res = await fetch(url + "?pageSize=300&key=" + encodeURIComponent(API_KEY), { cache: "no-store" });
+          if (!res.ok) return [];
+          var data = await res.json();
+          return Array.isArray(data.documents) ? data.documents : [];
+        } catch (e) { return []; }
+      }
+
+      async function fetchUserByUid(uid) {
+        try {
+          var res = await fetch(USERS_URL + "/" + encodeURIComponent(uid) + "?key=" + encodeURIComponent(API_KEY), { cache: "no-store" });
+          if (!res.ok) return null;
+          var data = await res.json();
+          return data && data.fields ? parseUserDoc(data) : null;
+        } catch (e) { return null; }
+      }
+
+      async function fetchBrandingIcon() {
+        var urls = [BRANDING_URL, SETTINGS_URL, CONFIG_URL];
+        for (var i = 0; i < urls.length; i++) {
+          var docs = await fsGetList(urls[i]);
+          for (var j = 0; j < docs.length; j++) {
+            var f = docs[j].fields || {};
+            var ic = strVal(f, "websiteIcon") || strVal(f, "siteIcon") || strVal(f, "logoUrl");
+            if (/^https?:\/\//i.test(ic) || /^data:image\//i.test(ic)) {
+              document.getElementById("headerBrandLogo").innerHTML = '<img src="' + esc(ic) + '" alt="OSSIAN" />';
+              document.getElementById("siteFaviconLink").href = ic;
+              return;
+            }
+          }
+        }
+      }
+
+      function showScreen(name) {
+        ["login", "region", "ranking"].forEach(function (s) {
+          document.getElementById("screen-" + s).classList.toggle("active", s === name);
+        });
+        document.getElementById("refreshBtn").style.display = name === "ranking" ? "inline-flex" : "none";
+        document.getElementById("signOutBtn").style.display = name !== "login" ? "inline-flex" : "none";
+        if (name === "ranking") startSevenDayCountdown();
+        else stopSevenDayCountdown();
+      }
+
+      /* ================= LOGIN ================= */
+      function persistSession(user) {
+        currentUser = user;
+        safeSet("ossian_ranking_user_v1", JSON.stringify(user));
+        safeSet("ossian_current_user_v1", JSON.stringify(user));
+      }
+
+      function getSavedTokBuyRegion(user) {
+        if (user && user.buyCountry) {
+          return { region: user.buyRegion || "ALL", country: user.buyCountry };
+        }
+        try {
+          var raw = JSON.parse(safeGet("ossian_buy_region_lock_" + (user ? user.uid : "guest"), "null"));
+          if (raw && raw.saved && raw.country) {
+            return { region: raw.region || "ALL", country: raw.country };
+          }
+        } catch (e) {}
+        return null;
+      }
+
+      async function handlePostLogin(user) {
+        var errEl = document.getElementById("loginErrBox");
+        if (user.suspended) {
+          errEl.textContent = "This account is Suspended in OSSIAN PRO.";
+          errEl.classList.add("show");
+          showToast("Suspended account cannot enter!", true);
+          return;
+        }
+        errEl.classList.remove("show");
+        persistSession(user);
+
+        var tokReg = getSavedTokBuyRegion(user);
+        var localVerified = null;
+        try { localVerified = JSON.parse(safeGet("ossian_ranking_region_ok_" + user.uid, "null")); } catch (e) {}
+
+        if (tokReg && localVerified &&
+            localVerified.region === tokReg.region &&
+            localVerified.country.toLowerCase() === tokReg.country.toLowerCase()) {
+          verifiedRegion = tokReg.region;
+          verifiedCountry = tokReg.country;
+          openRankingPage();
+        } else {
+          setupRegionScreen(tokReg);
+          showScreen("region");
+        }
+      }
+
+      document.getElementById("rankingLoginForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        var errBox = document.getElementById("loginErrBox");
+        errBox.classList.remove("show");
+        var email = document.getElementById("loginEmail").value.trim().toLowerCase();
+        var pass = document.getElementById("loginPassword").value;
+        var btn = document.getElementById("loginSubmitBtn");
+        btn.disabled = true;
+
+        var passSha = await sha256Salted(pass, email);
+        var passLegacy = hashSecret(pass);
+        var docs = await fsGetList(USERS_URL);
+        var users = docs.map(parseUserDoc);
+        var matched = users.find(function (u) {
+          return u.email === email && ((u.passwordSha256 && u.passwordSha256 === passSha) || (u.passwordHash && u.passwordHash === passLegacy));
+        });
+        btn.disabled = false;
+
+        if (!matched) {
+          errBox.textContent = "Wrong email or password!";
+          errBox.classList.add("show");
+          showToast("Wrong email or password!", true);
+          return;
+        }
+        document.getElementById("rankingLoginForm").reset();
+        await handlePostLogin(matched);
+      });
+
+      function triggerQrLoginUpload() {
+        var inp = document.getElementById("qrLoginFileInput");
+        inp.value = "";
+        inp.click();
+      }
+
+      document.getElementById("qrLoginFileInput").addEventListener("change", function (e) {
+        var file = e.target.files && e.target.files[0];
+        if (!file || typeof window.jsQR !== "function") return;
+        var reader = new FileReader();
+        reader.onload = function (ev) {
+          var img = new Image();
+          img.onload = async function () {
+            var c = document.createElement("canvas");
+            c.width = img.width; c.height = img.height;
+            var ctx = c.getContext("2d");
+            ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, c.width, c.height);
+            ctx.drawImage(img, 0, 0);
+            var code = window.jsQR(ctx.getImageData(0, 0, c.width, c.height).data, c.width, c.height, { inversionAttempts: "attemptBoth" });
+            if (!code || !code.data) { showToast("Invalid QR code!", true); return; }
+            var payload = unsealQrPayload(code.data);
+            if (!payload || !payload.u || !payload.t) { showToast("Invalid OSSIAN PRO Login QR!", true); return; }
+            var cloudUser = await fetchUserByUid(payload.u);
+            if (!cloudUser || cloudUser.qrToken !== payload.t) { showToast("Expired or invalid Login QR!", true); return; }
+            await handlePostLogin(cloudUser);
+          };
+          img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+
+      function signOutRanking() {
+        currentUser = null;
+        verifiedRegion = "";
+        verifiedCountry = "";
+        safeDel("ossian_ranking_user_v1");
+        showScreen("login");
+        showToast("Signed out!");
+      }
+
+      /* ================= REGION & COUNTRY ================= */
+      function onRegionSelectChange() {
+        var reg = document.getElementById("regionSelect").value;
+        var sel = document.getElementById("countrySelect");
+        if (!reg) {
+          sel.innerHTML = '<option value="">-- Select Country --</option>';
+          return;
+        }
+        var filtered = COUNTRIES.filter(function (c) { return reg === "ALL" || c[0] === reg; });
+        sel.innerHTML = '<option value="">-- Select Country --</option>' + filtered.map(function (c) {
+          return '<option value="' + esc(c[1]) + '">' + esc(c[1]) + '</option>';
+        }).join("");
+      }
+
+      function setupRegionScreen(tokReg) {
+        document.getElementById("regionErrBox").classList.remove("show");
+        document.getElementById("regionSelect").value = "";
+        onRegionSelectChange();
+        var banner = document.getElementById("regionModeBanner");
+
+        if (tokReg && tokReg.country) {
+          document.getElementById("regionTitle").textContent = "Verify OSSIAN TOK Buy Region";
+          document.getElementById("regionDesc").textContent = "Aapne OSSIAN TOK Buy mein pehle Region & Country save ki hui hai. Wahi select karein, different hone par reject ho jayega.";
+          document.getElementById("regionBtnText").textContent = "Verify & Open Ranking";
+          banner.style.display = "block";
+          banner.innerHTML = '<i class="fa-solid fa-lock gold-icon"></i> Synced with <strong>OSSIAN TOK Buy</strong> — Exact match required.';
+        } else {
+          document.getElementById("regionTitle").textContent = "Select & Save Region & Country";
+          document.getElementById("regionDesc").textContent = "OSSIAN TOK Buy mein abhi koi Region/Country select nahi hai. Yahan select karein — yeh aapke account mein save ho jayegi.";
+          document.getElementById("regionBtnText").textContent = "Save & Open Ranking";
+          banner.style.display = "block";
+          banner.innerHTML = '<i class="fa-solid fa-earth-asia gold-icon"></i> First-time setup: Yahan save karne par yeh <strong>OSSIAN TOK Buy</strong> &amp; <strong>Withdraw</strong> ke liye bhi lock ho jayegi (60 days).';
+        }
+      }
+
+      document.getElementById("regionForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        if (!currentUser) { showScreen("login"); return; }
+        var errBox = document.getElementById("regionErrBox");
+        errBox.classList.remove("show");
+
+        var selReg = document.getElementById("regionSelect").value;
+        var selCnt = document.getElementById("countrySelect").value;
+        if (!selReg || !selCnt) { showToast("Select Region & Country!", true); return; }
+
+        var btn = document.getElementById("regionSubmitBtn");
+        btn.disabled = true;
+
+        var fresh = await fetchUserByUid(currentUser.uid);
+        if (fresh) persistSession(fresh);
+        var tokReg = getSavedTokBuyRegion(currentUser);
+
+        if (tokReg && tokReg.country) {
+          if (selReg !== tokReg.region || selCnt.toLowerCase() !== tokReg.country.toLowerCase()) {
+            btn.disabled = false;
+            errBox.textContent = "Rejected! Yeh Region/Country OSSIAN TOK Buy mein save ki gayi Region/Country se different hai.";
+            errBox.classList.add("show");
+            showToast("Rejected! Region/Country mismatch.", true);
+            return;
+          }
+          verifiedRegion = tokReg.region;
+          verifiedCountry = tokReg.country;
+        } else {
+          var now = Date.now();
+          try {
+            await fetch(USERS_URL + "/" + encodeURIComponent(currentUser.uid) +
+              "?updateMask.fieldPaths=buyRegion&updateMask.fieldPaths=buyCountry&updateMask.fieldPaths=regionSavedAt&key=" + encodeURIComponent(API_KEY), {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                fields: {
+                  buyRegion: { stringValue: selReg },
+                  buyCountry: { stringValue: selCnt },
+                  regionSavedAt: { integerValue: String(now) }
+                }
+              })
+            });
+          } catch (err) {}
+
+          currentUser.buyRegion = selReg;
+          currentUser.buyCountry = selCnt;
+          currentUser.regionSavedAt = now;
+          persistSession(currentUser);
+          safeSet("ossian_buy_region_lock_" + currentUser.uid, JSON.stringify({
+            saved: true, region: selReg, country: selCnt, savedAt: now
+          }));
+          verifiedRegion = selReg;
+          verifiedCountry = selCnt;
+          showToast("Region & Country saved & synced with OSSIAN TOK Buy!");
+        }
+
+        safeSet("ossian_ranking_region_ok_" + currentUser.uid, JSON.stringify({
+          region: verifiedRegion, country: verifiedCountry, verifiedAt: Date.now()
+        }));
+        btn.disabled = false;
+        openRankingPage();
+      });
+
+      /* ================= TOP 100 RANKING (NO REAL USERS IN TOP 100, TOP 6 BLUE-TICK VERIFIED) ================= */
+      async function openRankingPage() {
+        showScreen("ranking");
+        await syncRankingData(false);
+      }
+
+      async function syncRankingData(showMsg) {
+        if (!currentUser) return;
+        var [freshMe, appDocs, subDocs, wdDocs] = await Promise.all([
+          fetchUserByUid(currentUser.uid),
+          fsGetList(APPS_URL),
+          fsGetList(SUBS_URL),
+          fsGetList(WITHDRAWS_URL)
+        ]);
+
+        if (freshMe) {
+          if (freshMe.suspended) {
+            signOutRanking();
+            showToast("Account is Suspended!", true);
+            return;
+          }
+          persistSession(freshMe);
+        }
+
+        // Calculate logged-in user's own stats for Top Hero Card only (User stays OUTSIDE Top 100)
+        var mySeenUrls = {};
+        var myUploads = 0;
+        var myPopular = 0;
+
+        var parsedApps = appDocs.map(function (d) {
+          var f = d.fields || {};
+          return {
+            uid: strVal(f, "submittedByUid") || strVal(f, "uid"),
+            url: strVal(f, "url").toLowerCase(),
+            externalUses: numVal(f, "externalUses", 0)
+          };
+        }).sort(function (a, b) { return b.externalUses - a.externalUses; });
+
+        parsedApps.forEach(function (a, idx) {
+          if (a.uid === currentUser.uid) {
+            myUploads += 1;
+            mySeenUrls[a.url] = true;
+            if (a.externalUses > 0 || idx < 3) {
+              myPopular += (idx < 3 ? Math.max(1, a.externalUses) : 1);
+            }
+          }
+        });
+
+        subDocs.forEach(function (d) {
+          var f = d.fields || {};
+          var uid = strVal(f, "submittedByUid");
+          var url = strVal(f, "url").toLowerCase();
+          if (uid === currentUser.uid && !mySeenUrls[url]) {
+            myUploads += 1;
+            mySeenUrls[url] = true;
+          }
+        });
+
+        var myPayout = 0;
+        wdDocs.forEach(function (d) {
+          var f = d.fields || {};
+          if (strVal(f, "uid") === currentUser.uid && strVal(f, "status", "pending").toLowerCase() !== "rejected") {
+            myPayout = roundUsd(myPayout + numVal(f, "amountUsd", 0));
+          }
+        });
+
+        // Build 100 Rotating Creators (ZERO real users in Top 100; different Top #1 & list every day; refreshes every 7 days)
+        activeWeekIndex = Math.floor(Date.now() / SEVEN_DAYS_MS);
+        activeDayIndex = Math.floor(Date.now() / DAY_MS);
+        var dayWithinWeek = (activeDayIndex % 7) + 1;
+
+        var simSeed = (activeWeekIndex * 100003) ^ (activeDayIndex * 7919) ^ 0x5A17C3;
+        var rand = mulberry32(simSeed);
+        var usedNames = {};
+        var usedUids = {};
+        usedUids[currentUser.uid] = true;
+
+        var pool = [];
+        for (var i = 0; i < 100; i++) {
+          var fn = CREATOR_FIRST[Math.floor(rand() * CREATOR_FIRST.length)];
+          var ln = CREATOR_LAST[Math.floor(rand() * CREATOR_LAST.length)];
+          var fullName = fn + " " + ln;
+          while (usedNames[fullName] || fullName.toLowerCase() === String(currentUser.name || "").toLowerCase()) {
+            fullName = CREATOR_FIRST[Math.floor(rand() * CREATOR_FIRST.length)] + " " +
+                       CREATOR_LAST[Math.floor(rand() * CREATOR_LAST.length)];
+          }
+          usedNames[fullName] = true;
+
+          var uidCandidate = "OW-" + String(100000 + Math.floor(rand() * 899999));
+          while (usedUids[uidCandidate]) {
+            uidCandidate = "OW-" + String(100000 + Math.floor(rand() * 899999));
+          }
+          usedUids[uidCandidate] = true;
+
+          // Ensure varied high scores so Top 1 is always a fresh creator each day
+          var tierBoost = i === 0 ? 4.2 : (i < 6 ? 3.1 : (i < 25 ? 1.8 : (i < 60 ? 1.0 : 0.45)));
+          var uploads = Math.max(1, Math.floor((2 + rand() * 14) * tierBoost));
+          var popCount = Math.floor(rand() * (uploads + 4) * (i < 15 ? 1.6 : 0.75));
+          var payout = roundUsd((uploads * 0.30) + (popCount * 2.50) + (rand() * 145 * tierBoost));
+          var score = (uploads * 35) + (popCount * 90) + (payout * 4) + (rand() * 30);
+
+          pool.push({
+            uid: uidCandidate,
+            name: fullName,
+            country: CREATOR_COUNTRIES[Math.floor(rand() * CREATOR_COUNTRIES.length)],
+            uploads: uploads,
+            popularCount: popCount,
+            payoutUsd: payout,
+            score: score
+          });
+        }
+
+        pool.sort(function (a, b) { return b.score - a.score; });
+
+        rankingData100 = pool.map(function (item, idx) {
+          item.rank = idx + 1;
+          item.isVerified = item.rank <= 6; // Blue Tick + Verified ONLY for Top 6
+          return item;
+        });
+
+        // Update Top User Account Card (Balance, Tokens, UID, User Stats)
+        document.getElementById("heroUserName").textContent = currentUser.name || "OSSIAN User";
+        document.getElementById("heroUserUid").textContent = "UID: " + currentUser.uid;
+        document.getElementById("heroUserCountry").textContent = verifiedCountry;
+        document.getElementById("heroMyRank").textContent = "Outside Top 100 (#101+)";
+        document.getElementById("heroBalance").textContent = "$" + roundUsd(currentUser.balance).toFixed(2);
+        document.getElementById("heroTokens").textContent = fmtNum(currentUser.tokens);
+        document.getElementById("heroMyActivity").textContent = myUploads + " / " + myPopular;
+        document.getElementById("heroMyPayout").textContent = "$" + myPayout.toFixed(2);
+
+        document.getElementById("cycleNumberText").textContent = (activeWeekIndex % 52) + 1;
+        document.getElementById("dailyDateLabel").textContent =
+          "Day " + dayWithinWeek + "/7 (" + new Date().toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) + ") • Daily Updated Leaderboard";
+
+        renderPodium();
+        renderRankingList();
+        if (showMsg) showToast("Top 100 Ranking synced!");
+      }
+
+      function getVerifiedBadgeHtml(rank) {
+        if (rank <= 6) {
+          return '<span class="verified-blue-pill"><i class="fa-solid fa-circle-check"></i> Verified</span>';
+        }
+        return "";
+      }
+
+      function renderPodium() {
+        var top3 = rankingData100.slice(0, 3);
+        var medals = ["1st", "2nd", "3rd"];
+        document.getElementById("podiumGrid").innerHTML = top3.map(function (u, i) {
+          return '<div class="podium-card ' + (i === 0 ? "rank-1" : "") + '">' +
+            '<div class="rank-crown">#' + u.rank + '</div>' +
+            '<div style="font-size:14.5px;font-weight:800;margin-bottom:4px;">' + esc(u.name) + '</div>' +
+            '<div style="margin-bottom:6px;">' + getVerifiedBadgeHtml(u.rank) + '</div>' +
+            '<div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">' + esc(u.uid) + ' • ' + esc(u.country) + '</div>' +
+            '<div class="rank-stats-row">' +
+              '<div class="r-stat-pill"><div class="r-stat-k">Uploads</div><div class="r-stat-v">' + u.uploads + '</div></div>' +
+              '<div class="r-stat-pill"><div class="r-stat-k">Popular</div><div class="r-stat-v">' + u.popularCount + 'x</div></div>' +
+              '<div class="r-stat-pill"><div class="r-stat-k">Payout</div><div class="r-stat-v">$' + u.payoutUsd.toFixed(0) + '</div></div>' +
+            '</div>' +
+            '<div style="font-size:10.5px;font-weight:800;color:var(--primary);margin-top:6px;">' + medals[i] + ' Place</div>' +
+          '</div>';
+        }).join("");
+      }
+
+      function setRankFilter(val, btn) {
+        rankFilter = val;
+        btn.parentNode.querySelectorAll(".chip").forEach(function (c) { c.classList.remove("active"); });
+        btn.classList.add("active");
+        renderRankingList();
+      }
+
+      function renderRankingList() {
+        var el = document.getElementById("rankingListBody");
+        var q = document.getElementById("rankSearchInput").value.trim().toLowerCase();
+
+        var filtered = rankingData100.filter(function (u) {
+          var matchF = rankFilter === "all" ||
+            (rankFilter === "top6" && u.rank <= 6) ||
+            (rankFilter === "top10" && u.rank <= 10) ||
+            (rankFilter === "top50" && u.rank <= 50);
+          var matchQ = !q || u.name.toLowerCase().includes(q) || u.uid.toLowerCase().includes(q) || u.country.toLowerCase().includes(q);
+          return matchF && matchQ;
+        });
+
+        if (!filtered.length) {
+          el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text-muted);font-size:13px;">No ranked users match your search.</div>';
+          return;
+        }
+
+        el.innerHTML = filtered.map(function (u) {
+          return '<div class="rank-row ' + (u.rank <= 6 ? "top6" : "") + '">' +
+            '<div class="rank-row-top">' +
+              '<div class="rank-left">' +
+                '<div class="rank-num-box">#' + u.rank + '</div>' +
+                '<div style="min-width:0;">' +
+                  '<div class="rank-name">' + esc(u.name) + '</div>' +
+                  '<div class="rank-sub">' + esc(u.uid) + ' • ' + esc(u.country) + '</div>' +
+                '</div>' +
+              '</div>' +
+              getVerifiedBadgeHtml(u.rank) +
+            '</div>' +
+            '<div class="rank-stats-row">' +
+              '<div class="r-stat-pill"><div class="r-stat-k">Websites / Apps</div><div class="r-stat-v">' + u.uploads + '</div></div>' +
+              '<div class="r-stat-pill"><div class="r-stat-k">Popular Rank</div><div class="r-stat-v">' + u.popularCount + ' Times</div></div>' +
+              '<div class="r-stat-pill"><div class="r-stat-k">Total Payout</div><div class="r-stat-v">$' + u.payoutUsd.toFixed(2) + '</div></div>' +
+            '</div>' +
+          '</div>';
+        }).join("");
+      }
+
+      /* ================= 7-DAY REFRESH COUNTDOWN ================= */
+      function startSevenDayCountdown() {
+        stopSevenDayCountdown();
+        function tick() {
+          var now = Date.now();
+          var curWeek = Math.floor(now / SEVEN_DAYS_MS);
+          var curDay = Math.floor(now / DAY_MS);
+
+          if (curWeek !== activeWeekIndex || curDay !== activeDayIndex) {
+            syncRankingData(false);
+            showToast(curWeek !== activeWeekIndex ? "7-Day Ranking Refreshed!" : "Daily Top 100 Rankings Updated!");
+            return;
+          }
+
+          var nextRefreshAt = (curWeek + 1) * SEVEN_DAYS_MS;
+          var rem = Math.max(0, nextRefreshAt - now);
+          var d = Math.floor(rem / DAY_MS);
+          var h = Math.floor((rem % DAY_MS) / 3600000);
+          var m = Math.floor((rem % 3600000) / 60000);
+          var s = Math.floor((rem % 60000) / 1000);
+
+          var el = document.getElementById("sevenDayTimer");
+          if (el) {
+            el.textContent = d + "d " + String(h).padStart(2, "0") + "h " + String(m).padStart(2, "0") + "m " + String(s).padStart(2, "0") + "s";
+          }
+        }
+        tick();
+        timerHandle = setInterval(tick, 1000);
+      }
+
+      function stopSevenDayCountdown() {
+        if (timerHandle) {
+          clearInterval(timerHandle);
+          timerHandle = null;
+        }
+      }
+
+      function toggleTheme() {
+        var dark = !document.body.classList.contains("dark");
+        document.body.classList.toggle("dark", dark);
+        safeSet("ossian_web_theme_v1", dark ? "dark" : "light");
+        document.getElementById("themeToggleBtn").innerHTML = dark
+          ? '<i class="fa-solid fa-sun gold-icon"></i>' : '<i class="fa-solid fa-moon gold-icon"></i>';
+      }
+
+      window.triggerQrLoginUpload = triggerQrLoginUpload;
+      window.signOutRanking = signOutRanking;
+      window.onRegionSelectChange = onRegionSelectChange;
+      window.syncRankingData = syncRankingData;
+      window.setRankFilter = setRankFilter;
+      window.renderRankingList = renderRankingList;
+      window.toggleTheme = toggleTheme;
+
+      if (safeGet("ossian_web_theme_v1", "light") === "dark") {
+        document.body.classList.add("dark");
+        document.getElementById("themeToggleBtn").innerHTML = '<i class="fa-solid fa-sun gold-icon"></i>';
+      }
+
+      fetchBrandingIcon();
+
+      (async function initSession() {
+        var saved = null;
+        try {
+          saved = JSON.parse(safeGet("ossian_ranking_user_v1", "null")) ||
+                  JSON.parse(safeGet("ossian_current_user_v1", "null"));
+        } catch (e) { saved = null; }
+
+        if (saved && saved.uid) {
+          var fresh = await fetchUserByUid(saved.uid);
+          await handlePostLogin(fresh || saved);
+        } else {
+          showScreen("login");
+        }
+      })();
+    })();
+  </script>
+</body>
+</html>
